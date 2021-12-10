@@ -21,6 +21,7 @@ model Point{
 model Floor {
   id Int @id @default(autoincrement())
   height Float
+  size Float
   index Int
   name String
   building Building @relation(fields: [building_id],references: [id])

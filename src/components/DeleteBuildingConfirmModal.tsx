@@ -4,14 +4,15 @@ import Button from './Button';
 import supabase from 'libs/supabase';
 import { useSWRConfig } from 'swr';
 
-const DeleteConfirmModal: FC<DeleteConfirmModalProps> = ({ entityId, entity, isOpen, onClose }) => {
+const DeleteBuildingConfirmModal: FC<DeleteBuildingConfirmModalProps> = ({ buildingId, isOpen, onClose }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { mutate } = useSWRConfig();
 
 	const onDelete = async () => {
 		try {
 			setIsLoading(true);
-			const { data, error } = await supabase.from('Building').delete().eq('id', entityId);
+
+			const { data, error } = await supabase.from('Building').delete().eq('id', buildingId);
 			if (!error) {
 				onClose();
 				mutate('buildings');
@@ -74,7 +75,7 @@ const DeleteConfirmModal: FC<DeleteConfirmModalProps> = ({ entityId, entity, isO
 									</div>
 									<div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
 										<h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-											Delete building
+											Delete Building
 										</h3>
 										<div className="mt-2">
 											<p className="text-sm text-gray-500">
@@ -101,12 +102,11 @@ const DeleteConfirmModal: FC<DeleteConfirmModalProps> = ({ entityId, entity, isO
 	);
 };
 
-export default DeleteConfirmModal;
+export default DeleteBuildingConfirmModal;
 
 // component props
-type DeleteConfirmModalProps = {
-	entity: 'building' | 'floor';
-	entityId: number;
+type DeleteBuildingConfirmModalProps = {
+	buildingId: number;
 	isOpen: boolean;
 	onClose: () => any;
 };

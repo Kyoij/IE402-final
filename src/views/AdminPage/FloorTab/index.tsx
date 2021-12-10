@@ -13,7 +13,7 @@ const FloorTab = () => {
 		let { data } = await supabase.from('Building').select('*').order('id', { ascending: false });
 		return data;
 	});
-	const [selectedBuilding, setSelectedBuilding] = useState<number>(buildings?.[0].id);
+	const [selectedBuilding, setSelectedBuilding] = useState<number>(buildings?.[0]?.id);
 	const addController = useDisclosure();
 	const { data } = useSWR(selectedBuilding ? ['building', selectedBuilding, 'floors'] : null, async () => {
 		let { data } = await supabase
@@ -32,7 +32,7 @@ const FloorTab = () => {
 	});
 
 	useEffect(() => {
-		if (!selectedBuilding && buildings) setSelectedBuilding(buildings[0].id);
+		if (!selectedBuilding && buildings) setSelectedBuilding(buildings[0]?.id);
 	}, [buildings]);
 
 	return (

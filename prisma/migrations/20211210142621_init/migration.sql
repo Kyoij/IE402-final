@@ -12,6 +12,7 @@ CREATE TABLE "Point" (
 CREATE TABLE "Floor" (
     "id" SERIAL NOT NULL,
     "height" DOUBLE PRECISION NOT NULL,
+    "size" DOUBLE PRECISION NOT NULL,
     "index" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
     "building_id" INTEGER NOT NULL,

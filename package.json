@@ -6,7 +6,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"type": "npx openapi-typescript https://btxzlprdxvhgaxhnewil.supabase.co/rest/v1/?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYzODc5OTczMiwiZXhwIjoxOTU0Mzc1NzMyfQ.mdEZ37PKHLFBxTh74IBP_dh5-v4auHTwsOJozWBxm_Y --output src/types/supabase.ts"
+		"type": "npx openapi-typescript https://tcmwthtikxonanmjwbbe.supabase.co/rest/v1/?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYzOTE0Njc2NSwiZXhwIjoxOTU0NzIyNzY1fQ.LqwZPKmIPCD4mgd-LHKjAjpXGEA0vqU9asyj0DYAmAA --output src/types/supabase.ts"
 	},
 	"prisma": {
 		"seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

@@ -140,7 +140,16 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 									<Input
 										type="number"
 										label="Height"
+										step="0.01"
 										{...register('height', { required: true, min: 0, valueAsNumber: true })}
+									/>
+								</div>
+								<div className="mt-2">
+									<Input
+										type="number"
+										label="Size"
+										step="0.01"
+										{...register('size', { required: true, min: 0, valueAsNumber: true })}
 									/>
 								</div>
 								<div className="mt-2">

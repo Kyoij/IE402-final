@@ -1,5 +1,5 @@
 import BuildingModal from 'components/BuildingModal';
-import DeleteConfirmModal from 'components/DeleteConfirmModal';
+import DeleteBuildingConfirmModal from 'components/DeleteBuildingConfirmModal';
 import useDisclosure from 'hooks/useDisclosure';
 import { FC } from 'react';
 import { definitions } from 'types/supabase';
@@ -20,12 +20,7 @@ const BuildingRow: FC<BuildingRowProps> = ({ building }) => {
 				</button>
 			</td>
 			<BuildingModal isOpen={editController.isOpen} onClose={editController.onClose} building={building} />
-			<DeleteConfirmModal
-				isOpen={deleteController.isOpen}
-				onClose={deleteController.onClose}
-				entity="building"
-				entityId={building.id}
-			/>
+			<DeleteBuildingConfirmModal isOpen={deleteController.isOpen} onClose={deleteController.onClose} buildingId={building.id} />
 		</tr>
 	);
 };
