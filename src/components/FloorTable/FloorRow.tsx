@@ -1,0 +1,35 @@
+import DeleteConfirmModal from 'components/DeleteConfirmModal';
+import FloorModal from 'components/FloorModal';
+import useDisclosure from 'hooks/useDisclosure';
+import { FC } from 'react';
+import { definitions } from 'types/supabase';
+
+const FloorRow: FC<FloorRowProps> = ({ floor: floor }) => {
+	const editController = useDisclosure();
+	const deleteController = useDisclosure();
+
+	return (
+		<tr>
+			<td className="px-6 py-4 whitespace-nowrap">{floor.index}</td>
+			<td className="px-6 py-4 whitespace-nowrap">{floor.name}</td>
+			<td className="px-6 py-4 whitespace-nowrap text-right">{floor.height}</td>
+			<td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+				<button className="text-indigo-600 hover:text-indigo-900" onClick={editController.onOpen}>
+					Edit
+				</button>
+				<button className="text-red-600 hover:text-red-700 ml-3" onClick={deleteController.onOpen}>
+					Delete
+				</button>
+			</td>
+			<FloorModal isOpen={editController.isOpen} onClose={editController.onClose} floor={floor} building_id={floor.building_id} />
+			<DeleteConfirmModal isOpen={deleteController.isOpen} onClose={deleteController.onClose} entity="floor" entityId={floor.id} />
+		</tr>
+	);
+};
+
+export default FloorRow;
+
+// component props
+type FloorRowProps = {
+	floor: definitions['Floor'];
+};

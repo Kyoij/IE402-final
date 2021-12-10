@@ -1,0 +1,41 @@
+{
+	"name": "ie402-final-project",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint",
+		"type": "npx openapi-typescript https://btxzlprdxvhgaxhnewil.supabase.co/rest/v1/?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYzODc5OTczMiwiZXhwIjoxOTU0Mzc1NzMyfQ.mdEZ37PKHLFBxTh74IBP_dh5-v4auHTwsOJozWBxm_Y --output src/types/supabase.ts"
+	},
+	"prisma": {
+		"seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+	},
+	"dependencies": {
+		"@esri/react-arcgis": "^5.1.0",
+		"@headlessui/react": "^1.4.2",
+		"@simonwep/pickr": "^1.8.2",
+		"@supabase/supabase-js": "^1.28.5",
+		"clsx": "^1.1.1",
+		"esri-loader": "^3.3.0",
+		"next": "12.0.7",
+		"react": "17.0.2",
+		"react-dom": "17.0.2",
+		"react-hook-form": "^7.21.0",
+		"swr": "^1.1.0"
+	},
+	"devDependencies": {
+		"@prisma/client": "^3.6.0",
+		"@tailwindcss/forms": "^0.3.4",
+		"@types/node": "16.11.11",
+		"@types/react": "17.0.37",
+		"autoprefixer": "^10.4.0",
+		"eslint": "8.4.0",
+		"eslint-config-next": "12.0.7",
+		"postcss": "^8.4.4",
+		"prisma": "^3.6.0",
+		"tailwindcss": "^2.2.19",
+		"ts-node": "^10.4.0",
+		"typescript": "4.5.2"
+	}
+}

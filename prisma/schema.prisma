@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Point{
+  id Int @id @default(autoincrement())
+  longitude   Float
+  latitude    Float
+  floor_id Int
+  floor Floor @relation(fields: [floor_id],references:[id])
+}
+
+model Floor {
+  id Int @id @default(autoincrement())
+  height Float
+  index Int
+  name String
+  building Building @relation(fields: [building_id],references: [id])
+  building_id Int
+  points Point[]
+}
+
+model Building{
+  id Int @id @default(autoincrement())
+  name String
+  floors Floor[]
+}
