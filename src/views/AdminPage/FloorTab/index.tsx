@@ -22,6 +22,7 @@ const FloorTab = () => {
 				`id,
 				building_id,
 				height,
+				size,
 				index,
 				name,
 				points:Point(*)`

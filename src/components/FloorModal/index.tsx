@@ -22,7 +22,15 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 			if (floor) {
 				const { data, error } = await supabase
 					.from('Floor')
-					.update([{ building_id: values.building_id, height: values.height, index: values.index, name: values.name }])
+					.update([
+						{
+							building_id: values.building_id,
+							height: values.height,
+							size: values.size,
+							index: values.index,
+							name: values.name,
+						},
+					])
 					.eq('id', floor.id);
 				if (error) return console.log(error);
 
@@ -39,9 +47,15 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 					mutate(['building', building_id, 'floors']);
 				}
 			} else {
-				const { data, error } = await supabase
-					.from('Floor')
-					.insert([{ building_id: values.building_id, height: values.height, index: values.index, name: values.name }]);
+				const { data, error } = await supabase.from('Floor').insert([
+					{
+						building_id: values.building_id,
+						height: values.height,
+						size: values.size,
+						index: values.index,
+						name: values.name,
+					},
+				]);
 
 				if (error) return console.log(error);
 
