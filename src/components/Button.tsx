@@ -1,10 +1,13 @@
 import clsx from 'clsx';
 import React, { FC, ButtonHTMLAttributes } from 'react';
+import LoadingIcon from './LoadingIcon';
 
 const Button: FC<ButtonProps & ButtonHTMLAttributes<HTMLButtonElement>> = ({
 	variant = 'primary',
 	type = 'button',
+	isLoading,
 	className,
+	children,
 	...rest
 }) => {
 	return (
@@ -24,7 +27,16 @@ const Button: FC<ButtonProps & ButtonHTMLAttributes<HTMLButtonElement>> = ({
 				className
 			)}
 			{...rest}
-		/>
+		>
+			<div className="relative">
+				<span className={clsx({ 'opacity-0': isLoading })}>{children}</span>
+				{isLoading && (
+					<span className="absolute top-1/2 left-1/2 transform-gpu -translate-x-1/2 -translate-y-1/2">
+						<LoadingIcon />
+					</span>
+				)}
+			</div>
+		</button>
 	);
 };
 
@@ -33,4 +45,5 @@ export default Button;
 // component props
 type ButtonProps = {
 	variant?: 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'danger' | 'dark';
+	isLoading?: boolean;
 };

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 const SigninPage = () => {
 	const { user } = useUser();
@@ -14,7 +15,7 @@ const SigninPage = () => {
 
 	const onSubmit = async (values: any) => {
 		const { error } = await supabase.auth.signIn(values);
-		console.log(error);
+		if (error) toast.error(error);
 	};
 
 	useEffect(() => {

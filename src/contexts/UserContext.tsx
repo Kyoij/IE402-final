@@ -1,13 +1,14 @@
-import React, { useEffect, useState, createContext, useContext } from 'react';
+import React, { useEffect, useState, createContext, useContext, useRef } from 'react';
 import { SupabaseClient, Session, User } from '@supabase/supabase-js';
 import { useRouter } from 'next/router';
 
 export interface AuthSession {
 	user: User | null;
 	session: Session | null;
+	isLoading: boolean;
 }
 
-const UserContext = createContext<AuthSession>({ user: null, session: null });
+const UserContext = createContext<AuthSession>({ user: null, session: null, isLoading: true });
 
 export interface Props {
 	supabaseClient: SupabaseClient;
@@ -17,8 +18,18 @@ export interface Props {
 export const UserContextProvider = (props: Props) => {
 	const router = useRouter();
 	const { supabaseClient } = props;
-	const [session, setSession] = useState<Session | null>(supabaseClient.auth.session());
-	const [user, setUser] = useState<User | null>(session?.user ?? null);
+	const firstRender = useRef(true);
+	const [session, setSession] = useState<Session | null>(null);
+	const [user, setUser] = useState<User | null>(null);
+
+	useEffect(() => {
+		firstRender.current = false;
+		const ss = supabaseClient.auth.session();
+		if (ss) {
+			setSession(ss);
+			setUser(ss?.user);
+		}
+	}, []);
 
 	useEffect(() => {
 		const { data: authListener } = supabaseClient.auth.onAuthStateChange(async (event, session) => {
@@ -36,6 +47,7 @@ export const UserContextProvider = (props: Props) => {
 	const value = {
 		session,
 		user,
+		isLoading: firstRender.current,
 	};
 	return <UserContext.Provider value={value} {...props} />;
 };

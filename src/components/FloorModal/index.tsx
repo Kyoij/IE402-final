@@ -8,6 +8,7 @@ import supabase from 'libs/supabase';
 import { definitions } from 'types/supabase';
 import Textarea from 'components/Textarea';
 import Select from 'components/Select';
+import { toast } from 'react-toastify';
 
 const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }) => {
 	const { data: buildings } = useSWR('buildings', async () => {
@@ -31,10 +32,10 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 						},
 					])
 					.eq('id', floor.id);
-				if (error) return console.log(error);
+				if (error) return toast.error(error);
 
 				const { error: err1 } = await supabase.from('Point').delete().eq('floor_id', floor.id);
-				if (err1) return console.log(err1);
+				if (err1) return toast.error(err1);
 
 				const points = JSON.parse(values.points);
 				const { error: err } = await supabase
@@ -44,6 +45,9 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 				if (!err) {
 					onClose();
 					mutate(['building', building_id, 'floors']);
+					toast.success('Floor update successfull!');
+				} else {
+					toast.error(err);
 				}
 			} else {
 				const { data, error } = await supabase.from('Floor').insert([
@@ -55,20 +59,23 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 					},
 				]);
 
-				if (error) return console.log(error);
+				if (error) return toast.error(error);
 
 				const points = JSON.parse(values.points);
 				const { error: err } = await supabase
 					.from('Point')
 					.insert(points.map((point: any) => ({ longitude: point[0], latitude: point[1], floor_id: data?.[0].id })));
 
-				if (!error) {
+				if (!err) {
 					onClose();
 					mutate(['building', building_id, 'floors']);
+					toast.success('Floor update successfull!');
+				} else {
+					toast.error(err);
 				}
 			}
-		} catch (err) {
-			console.log(err);
+		} catch (err: any) {
+			toast.error(err.message);
 		}
 	};
 
@@ -160,7 +167,6 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 															return false;
 														return true;
 													} catch (err) {
-														console.log(err);
 														return false;
 													}
 												},
@@ -172,7 +178,7 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 									<Button variant="secondary" onClick={onClose}>
 										Cancel
 									</Button>
-									<Button variant="success" className="ml-2" type="submit" disabled={formState.isSubmitting}>
+									<Button variant="success" className="ml-2" type="submit" isLoading={formState.isSubmitting}>
 										Submit
 									</Button>
 								</div>

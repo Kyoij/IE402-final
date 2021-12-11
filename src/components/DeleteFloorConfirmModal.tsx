@@ -3,6 +3,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import Button from './Button';
 import supabase from 'libs/supabase';
 import { useSWRConfig } from 'swr';
+import { toast } from 'react-toastify';
 
 const DeleteFloorConfirmModal: FC<DeleteFloorConfirmModalProps> = ({ floor, isOpen, onClose }) => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -12,14 +13,17 @@ const DeleteFloorConfirmModal: FC<DeleteFloorConfirmModalProps> = ({ floor, isOp
 		try {
 			setIsLoading(true);
 			const { error: err1 } = await supabase.from('Point').delete().eq('floor_id', floor.id);
-			if (err1) return console.log(err1);
+			if (err1) return toast.error(err1);
 			const { data, error } = await supabase.from('Floor').delete().eq('id', floor.id);
 			if (!error) {
 				onClose();
 				mutate(['building', floor.building_id, 'floors']);
+				toast.success('Floor delete successfull!');
+			} else {
+				toast.error(error);
 			}
-		} catch (err) {
-			console.log(err);
+		} catch (err: any) {
+			toast.error(err.message);
 		} finally {
 			setIsLoading(false);
 		}
@@ -88,7 +92,7 @@ const DeleteFloorConfirmModal: FC<DeleteFloorConfirmModalProps> = ({ floor, isOp
 								</div>
 							</div>
 							<div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-								<Button className="sm:ml-3 sm:w-auto w-full" variant="danger" onClick={onDelete} disabled={isLoading}>
+								<Button className="sm:ml-3 sm:w-auto w-full" variant="danger" onClick={onDelete} isLoading={isLoading}>
 									Delete
 								</Button>
 								<Button className="sm:ml-3 sm:w-auto w-full mt-3 sm:mt-0" variant="secondary" onClick={onClose}>

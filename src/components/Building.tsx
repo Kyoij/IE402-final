@@ -2,6 +2,7 @@ import { FC, useEffect, useRef } from 'react';
 import {} from '@esri/react-arcgis';
 import useSWR from 'swr';
 import { loadModules } from 'esri-loader';
+import { toast } from 'react-toastify';
 
 const Building: FC<any> = ({ id, ...props }) => {
 	const layerRef = useRef<any>();
@@ -46,7 +47,7 @@ const Building: FC<any> = ({ id, ...props }) => {
 				layerRef.current = layer;
 				props.map.layers.add(layer);
 			})
-			.catch((err) => console.error(err));
+			.catch((err) => toast.error(err.message));
 
 		return function cleanup() {
 			props.map.layers.remove(layerRef.current);

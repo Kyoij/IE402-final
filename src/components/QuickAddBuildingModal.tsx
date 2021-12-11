@@ -8,8 +8,9 @@ import supabase from 'libs/supabase';
 import { definitions } from 'types/supabase';
 import Textarea from 'components/Textarea';
 import Select from 'components/Select';
+import { toast } from 'react-toastify';
 
-const QuickAddBuilding: FC<QuickAddBuildingProps> = ({ isOpen, onClose }) => {
+const QuickAddBuildingModal: FC<QuickAddBuildingModalProps> = ({ isOpen, onClose }) => {
 	const { register, handleSubmit, formState, reset, getValues } = useForm();
 	const { mutate } = useSWRConfig();
 
@@ -19,7 +20,7 @@ const QuickAddBuilding: FC<QuickAddBuildingProps> = ({ isOpen, onClose }) => {
 
 			// add building
 			const addBuildingData = await supabase.from('Building').insert([{ name: values.name, size: values.size, color: values.color }]);
-			if (addBuildingData.error) return console.log(addBuildingData.error);
+			if (addBuildingData.error) return toast.error(addBuildingData.error);
 
 			// add floor
 			geojson.features.forEach(async (feature: any, index: any) => {
@@ -32,7 +33,7 @@ const QuickAddBuilding: FC<QuickAddBuildingProps> = ({ isOpen, onClose }) => {
 					},
 				]);
 
-				if (error) return console.log(error);
+				if (error) return toast.error(error);
 
 				const { error: err } = await supabase.from('Point').insert(
 					feature.geometry.coordinates[0][0].map((point: any) => ({
@@ -45,10 +46,13 @@ const QuickAddBuilding: FC<QuickAddBuildingProps> = ({ isOpen, onClose }) => {
 				if (!err) {
 					onClose();
 					mutate('buildings');
+					toast.success('Building add successfull!');
+				} else {
+					toast.error(err);
 				}
 			});
-		} catch (err) {
-			console.log(err);
+		} catch (err: any) {
+			toast.error(err.message);
 		}
 	};
 
@@ -125,10 +129,10 @@ const QuickAddBuilding: FC<QuickAddBuildingProps> = ({ isOpen, onClose }) => {
 	);
 };
 
-export default QuickAddBuilding;
+export default QuickAddBuildingModal;
 
 // component props
-type QuickAddBuildingProps = {
+type QuickAddBuildingModalProps = {
 	isOpen: boolean;
 	onClose: () => any;
 };

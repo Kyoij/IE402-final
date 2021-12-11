@@ -1,14 +1,19 @@
 import Tabs from 'components/Tabs';
 import { useUser } from 'contexts/UserContext';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 import BuildingTab from './BuildingTab';
 import FloorTab from './FloorTab';
 
 const AdminPage = () => {
-	const { user } = useUser();
+	const router = useRouter();
+	const { user, isLoading } = useUser();
 
+	useEffect(() => {
+		if (isLoading) return;
+		if (!user) router.replace('/');
+	}, [user]);
 	if (!user) return null;
-
 	return (
 		<Tabs
 			tabs={[

@@ -1,5 +1,4 @@
-import supabase from 'libs/supabase';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import Header from './Header';
 
 const Layout: FC = ({ children }) => {

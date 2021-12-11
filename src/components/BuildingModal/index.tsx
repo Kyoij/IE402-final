@@ -6,6 +6,7 @@ import Button from 'components/Button';
 import Input from 'components/Input';
 import supabase from 'libs/supabase';
 import { definitions } from 'types/supabase';
+import { toast } from 'react-toastify';
 
 const BuildingModal: FC<BuildingModalProps> = ({ isOpen, onClose, building }) => {
 	const { register, handleSubmit, formState, reset } = useForm({ defaultValues: building });
@@ -14,20 +15,26 @@ const BuildingModal: FC<BuildingModalProps> = ({ isOpen, onClose, building }) =>
 	const onSubmit = async (values: definitions['Building']) => {
 		try {
 			if (building) {
-				const { data, error } = await supabase.from('Building').update(values).eq('id', building.id);
+				const { data, error, statusText } = await supabase.from('Building').update(values).eq('id', building.id);
 				if (!error) {
 					mutate('buildings');
 					onClose();
+					toast.success('Building update successfull!');
+				} else {
+					toast.error(error);
 				}
 			} else {
-				const { data, error } = await supabase.from('Building').insert([values]);
+				const { data, error, statusText } = await supabase.from('Building').insert([values]);
 				if (!error) {
 					mutate('buildings');
 					onClose();
+					toast.success('Building add successfull!');
+				} else {
+					toast.error(error);
 				}
 			}
-		} catch (err) {
-			console.log(err);
+		} catch (err: any) {
+			toast.error(err.message);
 		}
 	};
 
@@ -88,7 +95,7 @@ const BuildingModal: FC<BuildingModalProps> = ({ isOpen, onClose, building }) =>
 									<Button variant="secondary" onClick={onClose}>
 										Cancel
 									</Button>
-									<Button variant="success" className="ml-2" type="submit" disabled={formState.isSubmitting}>
+									<Button variant="success" className="ml-2" type="submit" isLoading={formState.isSubmitting}>
 										Submit
 									</Button>
 								</div>

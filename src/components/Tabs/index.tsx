@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import QuickAddBuilding from 'components/QuickAddBuilding';
+import QuickAddBuildingModal from 'components/QuickAddBuildingModal';
 import Button from 'components/Button';
 import useDisclosure from 'hooks/useDisclosure';
 import { useRouter } from 'next/router';
@@ -35,7 +35,7 @@ const Tabs: FC<TabsProps> = ({ tabs }) => {
 				</li>
 			</ul>
 			<div className="my-3">{selectedTab.content}</div>
-			<QuickAddBuilding isOpen={addController.isOpen} onClose={addController.onClose} />
+			<QuickAddBuildingModal isOpen={addController.isOpen} onClose={addController.onClose} />
 		</div>
 	);
 };

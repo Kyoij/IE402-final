@@ -3,6 +3,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import Button from './Button';
 import supabase from 'libs/supabase';
 import { useSWRConfig } from 'swr';
+import { toast } from 'react-toastify';
 
 const DeleteBuildingConfirmModal: FC<DeleteBuildingConfirmModalProps> = ({ buildingId, isOpen, onClose }) => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +15,7 @@ const DeleteBuildingConfirmModal: FC<DeleteBuildingConfirmModalProps> = ({ build
 
 			const floorsData = await supabase.from('Floor').select('*').eq('building_id', buildingId);
 
-			if (floorsData.error) return console.log(floorsData.error);
+			if (floorsData.error) return toast.error(floorsData.error);
 			// delete all points
 			const deletePointsData = await supabase
 				.from('Point')
@@ -23,19 +24,22 @@ const DeleteBuildingConfirmModal: FC<DeleteBuildingConfirmModalProps> = ({ build
 					'floor_id',
 					floorsData.data.map((floor) => floor.id)
 				);
-			if (deletePointsData.error) return console.log(deletePointsData.error);
+			if (deletePointsData.error) return toast.error(deletePointsData.error);
 
 			// delete all floors
 			const deleteFloorData = await supabase.from('Floor').delete().eq('building_id', buildingId);
-			if (deleteFloorData.error) return console.log(deletePointsData.error);
+			if (deleteFloorData.error) return toast.error(deletePointsData.error);
 
 			const { data, error } = await supabase.from('Building').delete().eq('id', buildingId);
 			if (!error) {
 				onClose();
 				mutate('buildings');
+				toast.success('Building delete successfull!');
+			} else {
+				toast.error(error);
 			}
-		} catch (err) {
-			console.log(err);
+		} catch (err: any) {
+			toast.error(err.message);
 		} finally {
 			setIsLoading(false);
 		}
@@ -104,7 +108,7 @@ const DeleteBuildingConfirmModal: FC<DeleteBuildingConfirmModalProps> = ({ build
 								</div>
 							</div>
 							<div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-								<Button className="sm:ml-3 sm:w-auto w-full" variant="danger" onClick={onDelete} disabled={isLoading}>
+								<Button className="sm:ml-3 sm:w-auto w-full" variant="danger" onClick={onDelete} isLoading={isLoading}>
 									Delete
 								</Button>
 								<Button className="sm:ml-3 sm:w-auto w-full mt-3 sm:mt-0" variant="secondary" onClick={onClose}>

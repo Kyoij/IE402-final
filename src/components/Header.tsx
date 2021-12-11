@@ -65,9 +65,9 @@ const Header = () => {
 									>
 										<Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
 											<div className="px-1 py-1 ">
-												<Menu.Item>
+												<Menu.Item as="div">
 													{({ active }) => (
-														<Link href="/change_password">
+														<Link href="/change_password" passHref>
 															<a
 																className={`${
 																	active ? 'bg-gray-500 text-white' : 'text-gray-900'

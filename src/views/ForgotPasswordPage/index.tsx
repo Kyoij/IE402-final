@@ -6,14 +6,17 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 const ForgotPasswordPage = () => {
 	const { user } = useUser();
 	const router = useRouter();
-	const { register, handleSubmit } = useForm();
+	const { register, handleSubmit, formState } = useForm();
 
 	const onSubmit = async (values: any) => {
 		const { error } = await supabase.auth.api.resetPasswordForEmail(values.email);
+		if (error) toast.error(error);
+		else toast.success('Check email!');
 	};
 
 	if (user) return null;
@@ -27,7 +30,7 @@ const ForgotPasswordPage = () => {
 					<Input label="Email" type="email" {...register('email', { required: true })} />
 				</div>
 				<div>
-					<Button type="submit" className="w-full">
+					<Button type="submit" className="w-full" isLoading={formState.isSubmitting}>
 						Reset Password
 					</Button>
 				</div>
