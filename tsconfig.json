@@ -18,6 +18,7 @@
 		"paths": {
 			"components/*": ["components/*"],
 			"hooks/*": ["hooks/*"],
+			"contexts/*": ["contexts/*"],
 			"views/*": ["views/*"],
 			"styles/*": ["styles/*"]
 		}
