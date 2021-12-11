@@ -13,9 +13,7 @@ const ForgotPasswordPage = () => {
 	const { register, handleSubmit } = useForm();
 
 	const onSubmit = async (values: any) => {
-		const { error } = await supabase.auth.api.resetPasswordForEmail(values.email, {
-			redirectTo: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/change_password`,
-		});
+		const { error } = await supabase.auth.api.resetPasswordForEmail(values.email);
 	};
 
 	if (user) return null;
