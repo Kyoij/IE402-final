@@ -12,6 +12,23 @@ const DeleteBuildingConfirmModal: FC<DeleteBuildingConfirmModalProps> = ({ build
 		try {
 			setIsLoading(true);
 
+			const floorsData = await supabase.from('Floor').select('*').eq('building_id', buildingId);
+
+			if (floorsData.error) return console.log(floorsData.error);
+			// delete all points
+			const deletePointsData = await supabase
+				.from('Point')
+				.delete()
+				.in(
+					'floor_id',
+					floorsData.data.map((floor) => floor.id)
+				);
+			if (deletePointsData.error) return console.log(deletePointsData.error);
+
+			// delete all floors
+			const deleteFloorData = await supabase.from('Floor').delete().eq('building_id', buildingId);
+			if (deleteFloorData.error) return console.log(deletePointsData.error);
+
 			const { data, error } = await supabase.from('Building').delete().eq('id', buildingId);
 			if (!error) {
 				onClose();

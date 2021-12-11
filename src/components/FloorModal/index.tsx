@@ -26,7 +26,6 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 						{
 							building_id: values.building_id,
 							height: values.height,
-							size: values.size,
 							index: values.index,
 							name: values.name,
 						},
@@ -51,7 +50,6 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 					{
 						building_id: values.building_id,
 						height: values.height,
-						size: values.size,
 						index: values.index,
 						name: values.name,
 					},
@@ -72,24 +70,6 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 		} catch (err) {
 			console.log(err);
 		}
-
-		// try {
-		// 	if (floor) {
-		// 		const { data, error } = await supabase.from('Building').update(values).eq('id', floor.id);
-		// 		if (!error) {
-		// 			mutate('buildings');
-		// 			onClose();
-		// 		}
-		// 	} else {
-		// 		const { data, error } = await supabase.from('Building').insert([values]);
-		// 		if (!error) {
-		// 			mutate('buildings');
-		// 			onClose();
-		// 		}
-		// 	}
-		// } catch (err) {
-		// 	console.log(err);
-		// }
 	};
 
 	useEffect(() => {
@@ -158,14 +138,7 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 										{...register('height', { required: true, min: 0, valueAsNumber: true })}
 									/>
 								</div>
-								<div className="mt-2">
-									<Input
-										type="number"
-										label="Size"
-										step="0.01"
-										{...register('size', { required: true, min: 0, valueAsNumber: true })}
-									/>
-								</div>
+
 								<div className="mt-2">
 									<Textarea
 										label="Points"

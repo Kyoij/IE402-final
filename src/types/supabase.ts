@@ -18,6 +18,8 @@ export interface paths {
         query: {
           id?: parameters["rowFilter.Building.id"];
           name?: parameters["rowFilter.Building.name"];
+          color?: parameters["rowFilter.Building.color"];
+          size?: parameters["rowFilter.Building.size"];
           /** Filtering Columns */
           select?: parameters["select"];
           /** Ordering */
@@ -70,6 +72,8 @@ export interface paths {
         query: {
           id?: parameters["rowFilter.Building.id"];
           name?: parameters["rowFilter.Building.name"];
+          color?: parameters["rowFilter.Building.color"];
+          size?: parameters["rowFilter.Building.size"];
         };
         header: {
           /** Preference */
@@ -86,6 +90,8 @@ export interface paths {
         query: {
           id?: parameters["rowFilter.Building.id"];
           name?: parameters["rowFilter.Building.name"];
+          color?: parameters["rowFilter.Building.color"];
+          size?: parameters["rowFilter.Building.size"];
         };
         body: {
           /** Building */
@@ -108,7 +114,6 @@ export interface paths {
         query: {
           id?: parameters["rowFilter.Floor.id"];
           height?: parameters["rowFilter.Floor.height"];
-          size?: parameters["rowFilter.Floor.size"];
           index?: parameters["rowFilter.Floor.index"];
           name?: parameters["rowFilter.Floor.name"];
           building_id?: parameters["rowFilter.Floor.building_id"];
@@ -164,7 +169,6 @@ export interface paths {
         query: {
           id?: parameters["rowFilter.Floor.id"];
           height?: parameters["rowFilter.Floor.height"];
-          size?: parameters["rowFilter.Floor.size"];
           index?: parameters["rowFilter.Floor.index"];
           name?: parameters["rowFilter.Floor.name"];
           building_id?: parameters["rowFilter.Floor.building_id"];
@@ -184,7 +188,6 @@ export interface paths {
         query: {
           id?: parameters["rowFilter.Floor.id"];
           height?: parameters["rowFilter.Floor.height"];
-          size?: parameters["rowFilter.Floor.size"];
           index?: parameters["rowFilter.Floor.index"];
           name?: parameters["rowFilter.Floor.name"];
           building_id?: parameters["rowFilter.Floor.building_id"];
@@ -418,6 +421,8 @@ export interface definitions {
      */
     id: number;
     name: string;
+    color: string;
+    size: number;
   };
   Floor: {
     /**
@@ -426,7 +431,6 @@ export interface definitions {
      */
     id: number;
     height: number;
-    size: number;
     index: number;
     name: string;
     /**
@@ -490,11 +494,12 @@ export interface parameters {
   "body.Building": definitions["Building"];
   "rowFilter.Building.id": string;
   "rowFilter.Building.name": string;
+  "rowFilter.Building.color": string;
+  "rowFilter.Building.size": string;
   /** Floor */
   "body.Floor": definitions["Floor"];
   "rowFilter.Floor.id": string;
   "rowFilter.Floor.height": string;
-  "rowFilter.Floor.size": string;
   "rowFilter.Floor.index": string;
   "rowFilter.Floor.name": string;
   "rowFilter.Floor.building_id": string;

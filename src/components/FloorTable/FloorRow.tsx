@@ -14,7 +14,6 @@ const FloorRow: FC<FloorRowProps> = ({ floor: floor }) => {
 			<td className="px-6 py-4 whitespace-nowrap">{floor.index}</td>
 			<td className="px-6 py-4 whitespace-nowrap">{floor.name}</td>
 			<td className="px-6 py-4 whitespace-nowrap text-right">{floor.height}</td>
-			<td className="px-6 py-4 whitespace-nowrap text-right">{floor.size}</td>
 			<td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
 				<button className="text-indigo-600 hover:text-indigo-900" onClick={editController.onOpen}>
 					Edit

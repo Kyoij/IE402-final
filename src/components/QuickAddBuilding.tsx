@@ -1,38 +1,59 @@
 import { FC, Fragment, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSWRConfig } from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import { Dialog, Transition } from '@headlessui/react';
 import Button from 'components/Button';
 import Input from 'components/Input';
 import supabase from 'libs/supabase';
 import { definitions } from 'types/supabase';
+import Textarea from 'components/Textarea';
+import Select from 'components/Select';
 
-const BuildingModal: FC<BuildingModalProps> = ({ isOpen, onClose, building }) => {
-	const { register, handleSubmit, formState, reset } = useForm({ defaultValues: building });
+const QuickAddBuilding: FC<QuickAddBuildingProps> = ({ isOpen, onClose }) => {
+	const { register, handleSubmit, formState, reset, getValues } = useForm();
 	const { mutate } = useSWRConfig();
 
-	const onSubmit = async (values: definitions['Building']) => {
+	const onSubmit = async (values: any) => {
 		try {
-			if (building) {
-				const { data, error } = await supabase.from('Building').update(values).eq('id', building.id);
-				if (!error) {
-					mutate('buildings');
+			const geojson = JSON.parse(values.geojson);
+
+			// add building
+			const addBuildingData = await supabase.from('Building').insert([{ name: values.name, size: values.size, color: values.color }]);
+			if (addBuildingData.error) return console.log(addBuildingData.error);
+
+			// add floor
+			geojson.features.forEach(async (feature: any, index: any) => {
+				const { data, error } = await supabase.from('Floor').insert([
+					{
+						building_id: addBuildingData.data[0].id,
+						height: values.size * index,
+						index: index + 1,
+						name: `Tầng ${index + 1}`,
+					},
+				]);
+
+				if (error) return console.log(error);
+
+				const { error: err } = await supabase.from('Point').insert(
+					feature.geometry.coordinates[0][0].map((point: any) => ({
+						longitude: point[0],
+						latitude: point[1],
+						floor_id: data?.[0].id,
+					}))
+				);
+
+				if (!err) {
 					onClose();
-				}
-			} else {
-				const { data, error } = await supabase.from('Building').insert([values]);
-				if (!error) {
 					mutate('buildings');
-					onClose();
 				}
-			}
+			});
 		} catch (err) {
 			console.log(err);
 		}
 	};
 
 	useEffect(() => {
-		if (isOpen) reset(building);
+		if (isOpen) reset();
 	}, [isOpen]);
 
 	return (
@@ -66,7 +87,7 @@ const BuildingModal: FC<BuildingModalProps> = ({ isOpen, onClose, building }) =>
 					>
 						<div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
 							<Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-								{building ? 'Building Detail' : 'Add Building'}
+								Quick Add
 							</Dialog.Title>
 
 							<form onSubmit={handleSubmit(onSubmit)}>
@@ -83,6 +104,9 @@ const BuildingModal: FC<BuildingModalProps> = ({ isOpen, onClose, building }) =>
 								</div>
 								<div className="mt-2">
 									<Input label="Color" {...register('color', { required: true })} />
+								</div>
+								<div className="mt-2">
+									<Textarea label="GeoJson" rows={10} {...register('geojson', { required: true })} />
 								</div>
 								<div className="mt-4 flex justify-end ">
 									<Button variant="secondary" onClick={onClose}>
@@ -101,11 +125,10 @@ const BuildingModal: FC<BuildingModalProps> = ({ isOpen, onClose, building }) =>
 	);
 };
 
-export default BuildingModal;
+export default QuickAddBuilding;
 
 // component props
-type BuildingModalProps = {
+type QuickAddBuildingProps = {
 	isOpen: boolean;
 	onClose: () => any;
-	building?: definitions['Building'];
 };

@@ -1,9 +1,13 @@
 import clsx from 'clsx';
+import QuickAddBuilding from 'components/QuickAddBuilding';
+import Button from 'components/Button';
+import useDisclosure from 'hooks/useDisclosure';
 import { useRouter } from 'next/router';
 import { FC, ReactElement, useMemo } from 'react';
 
 const Tabs: FC<TabsProps> = ({ tabs }) => {
 	const router = useRouter();
+	const addController = useDisclosure();
 	const selectedTab = useMemo(() => {
 		return tabs.find((tab) => tab.id == router.query.tab) || tabs[0];
 	}, [router.query.tab]);
@@ -25,8 +29,13 @@ const Tabs: FC<TabsProps> = ({ tabs }) => {
 						</button>
 					</li>
 				))}
+				<li className="flex-1"></li>
+				<li className="-mb-px">
+					<Button onClick={addController.onOpen}>Quick</Button>
+				</li>
 			</ul>
 			<div className="my-3">{selectedTab.content}</div>
+			<QuickAddBuilding isOpen={addController.isOpen} onClose={addController.onClose} />
 		</div>
 	);
 };

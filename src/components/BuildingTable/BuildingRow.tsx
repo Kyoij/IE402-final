@@ -11,6 +11,10 @@ const BuildingRow: FC<BuildingRowProps> = ({ building }) => {
 	return (
 		<tr>
 			<td className="px-6 py-4 whitespace-nowrap">{building.name}</td>
+			<td className="px-6 py-4 whitespace-nowrap">
+				<div className="w-4 h-4 border rounded" style={{ backgroundColor: building.color }}></div>
+			</td>
+			<td className="px-6 py-4 whitespace-nowrap text-right">{building.size}</td>
 			<td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
 				<button className="text-indigo-600 hover:text-indigo-900" onClick={editController.onOpen}>
 					Edit

@@ -3,7 +3,6 @@ import supabase from 'libs/supabase';
 import { useEffect } from 'react';
 import useSWR from 'swr';
 import Building from './Building';
-import LandmarkSample from './LandmarkSample';
 
 const LandmarkMap = () => {
 	const { data: buildings } = useSWR('buildings', async () => {
@@ -22,12 +21,12 @@ const LandmarkMap = () => {
 					tilt: 75,
 					fov: 120,
 				},
+				popup: { defaultPopupTemplateEnabled: true },
 			}}
 		>
 			{buildings?.map((building) => (
 				<Building id={building.id} key={building.id} />
 			))}
-			{/* <LandmarkSample /> */}
 		</Scene>
 	);
 };
