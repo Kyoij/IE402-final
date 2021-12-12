@@ -44,6 +44,11 @@ const Header = () => {
 							</div>
 						</div>
 					</div>
+					{user && (
+						<div className="ml-3">
+							<p className="text-white">{user.email}</p>
+						</div>
+					)}
 					<div className="ml-3 relative">
 						<div>
 							{user ? (
