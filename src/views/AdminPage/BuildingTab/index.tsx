@@ -7,7 +7,7 @@ import BuildingTable from 'components/BuildingTable';
 
 const BuildingTab = () => {
 	const addController = useDisclosure();
-	const { data } = useSWR('buildings', async () => {
+	const { data, error } = useSWR('buildings', async () => {
 		let { data } = await supabase.from('Building').select('*').order('id', { ascending: false });
 		return data;
 	});
@@ -17,7 +17,7 @@ const BuildingTab = () => {
 			<div className="flex justify-end">
 				<Button onClick={addController.onOpen}>Add building</Button>
 			</div>
-			<BuildingTable buildings={data} />
+			<BuildingTable buildings={data} isLoading={!error && !data} />
 			<BuildingModal isOpen={addController.isOpen} onClose={addController.onClose} />
 		</div>
 	);

@@ -1,8 +1,9 @@
+import LoadingIcon from 'components/LoadingIcon';
 import { FC } from 'react';
 import { definitions } from 'types/supabase';
 import BuildingRow from './BuildingRow';
 
-const BuildingTable: FC<BuidlingTableProps> = ({ buildings }) => {
+const BuildingTable: FC<BuidlingTableProps> = ({ buildings, isLoading }) => {
 	return (
 		<div className="flex flex-col mt-2">
 			<div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -36,9 +37,17 @@ const BuildingTable: FC<BuidlingTableProps> = ({ buildings }) => {
 								</tr>
 							</thead>
 							<tbody className="bg-white divide-y divide-gray-200">
-								{buildings?.map((building) => (
-									<BuildingRow building={building} key={building.id} />
-								))}
+								{isLoading ? (
+									<tr>
+										<td colSpan={4}>
+											<div className="flex justify-center py-3">
+												<LoadingIcon className="text-gray-600" />
+											</div>
+										</td>
+									</tr>
+								) : (
+									buildings?.map((building) => <BuildingRow building={building} key={building.id} />)
+								)}
 							</tbody>
 						</table>
 					</div>
@@ -53,4 +62,5 @@ export default BuildingTable;
 // component props
 type BuidlingTableProps = {
 	buildings?: definitions['Building'][] | null;
+	isLoading?: boolean;
 };

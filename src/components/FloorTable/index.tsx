@@ -1,8 +1,9 @@
+import LoadingIcon from 'components/LoadingIcon';
 import { FC } from 'react';
 import { definitions } from 'types/supabase';
 import FloorRow from './FloorRow';
 
-const FloorTable: FC<FloorTableProps> = ({ floors }) => {
+const FloorTable: FC<FloorTableProps> = ({ floors, isLoading }) => {
 	return (
 		<div className="flex flex-col mt-2">
 			<div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -35,9 +36,17 @@ const FloorTable: FC<FloorTableProps> = ({ floors }) => {
 								</tr>
 							</thead>
 							<tbody className="bg-white divide-y divide-gray-200">
-								{floors?.map((floor) => (
-									<FloorRow floor={floor} key={floor.id} />
-								))}
+								{isLoading ? (
+									<tr>
+										<td colSpan={4}>
+											<div className="flex justify-center py-3">
+												<LoadingIcon className="text-gray-600" />
+											</div>
+										</td>
+									</tr>
+								) : (
+									floors?.map((floor) => <FloorRow floor={floor} key={floor.id} />)
+								)}
 							</tbody>
 						</table>
 					</div>
@@ -52,4 +61,5 @@ export default FloorTable;
 // component props
 type FloorTableProps = {
 	floors?: definitions['Floor'][] | null;
+	isLoading?: boolean;
 };

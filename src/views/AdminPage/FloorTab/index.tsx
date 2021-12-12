@@ -15,7 +15,7 @@ const FloorTab = () => {
 	});
 	const [selectedBuilding, setSelectedBuilding] = useState<number>(buildings?.[0]?.id);
 	const addController = useDisclosure();
-	const { data } = useSWR(selectedBuilding ? ['building', selectedBuilding, 'floors'] : null, async () => {
+	const { data, error } = useSWR(selectedBuilding ? ['building', selectedBuilding, 'floors'] : null, async () => {
 		let { data } = await supabase
 			.from('Floor')
 			.select(
@@ -41,7 +41,7 @@ const FloorTab = () => {
 				<Select options={buildings || []} value={selectedBuilding} onChange={(e) => setSelectedBuilding(Number(e.target.value))} />
 				<Button onClick={addController.onOpen}>Add Floor</Button>
 			</div>
-			<FloorTable floors={data} />
+			<FloorTable floors={data} isLoading={!error && !data} />
 			<FloorModal isOpen={addController.isOpen} onClose={addController.onClose} building_id={selectedBuilding} />
 		</div>
 	);
