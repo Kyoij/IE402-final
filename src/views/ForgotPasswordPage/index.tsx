@@ -35,6 +35,14 @@ const ForgotPasswordPage = () => {
 						Reset Password
 					</Button>
 				</div>
+				<div className="flex items-center justify-between">
+					<div></div>
+					<div>
+						<Link href="/signin">
+							<a className="text-sm text-blue-600 hover:underline">Sigin</a>
+						</Link>
+					</div>
+				</div>
 			</form>
 		</section>
 	);
