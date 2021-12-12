@@ -11,11 +11,11 @@ import { toast } from 'react-toastify';
 const SigninPage = () => {
 	const { user } = useUser();
 	const router = useRouter();
-	const { register, handleSubmit } = useForm();
+	const { register, handleSubmit, formState } = useForm();
 
 	const onSubmit = async (values: any) => {
 		const { error } = await supabase.auth.signIn(values);
-		if (error) toast.error(error);
+		if (error) toast.error(error.message);
 	};
 
 	useEffect(() => {
@@ -37,7 +37,7 @@ const SigninPage = () => {
 					<Input label="Password" type="password" {...register('password', { required: true })} />
 				</div>
 				<div>
-					<Button type="submit" className="w-full">
+					<Button type="submit" className="w-full" isLoading={formState.isSubmitting}>
 						Sign In
 					</Button>
 				</div>

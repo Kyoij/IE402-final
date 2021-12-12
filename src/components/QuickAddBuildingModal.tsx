@@ -20,7 +20,7 @@ const QuickAddBuildingModal: FC<QuickAddBuildingModalProps> = ({ isOpen, onClose
 
 			// add building
 			const addBuildingData = await supabase.from('Building').insert([{ name: values.name, size: values.size, color: values.color }]);
-			if (addBuildingData.error) return toast.error(addBuildingData.error);
+			if (addBuildingData.error) return toast.error(addBuildingData.error.message);
 
 			// add floor
 			geojson.features.forEach(async (feature: any, index: any) => {
@@ -33,7 +33,7 @@ const QuickAddBuildingModal: FC<QuickAddBuildingModalProps> = ({ isOpen, onClose
 					},
 				]);
 
-				if (error) return toast.error(error);
+				if (error) return toast.error(error.message);
 
 				const { error: err } = await supabase.from('Point').insert(
 					feature.geometry.coordinates[0][0].map((point: any) => ({
@@ -48,7 +48,7 @@ const QuickAddBuildingModal: FC<QuickAddBuildingModalProps> = ({ isOpen, onClose
 					mutate('buildings');
 					toast.success('Building add successfull!');
 				} else {
-					toast.error(err);
+					toast.error(err.message);
 				}
 			});
 		} catch (err: any) {

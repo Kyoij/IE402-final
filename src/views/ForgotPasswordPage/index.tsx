@@ -15,7 +15,8 @@ const ForgotPasswordPage = () => {
 
 	const onSubmit = async (values: any) => {
 		const { error } = await supabase.auth.api.resetPasswordForEmail(values.email);
-		if (error) toast.error(error);
+		console.log(error);
+		if (error) toast.error(error.message);
 		else toast.success('Check email!');
 	};
 

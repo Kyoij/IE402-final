@@ -15,7 +15,7 @@ const DeleteBuildingConfirmModal: FC<DeleteBuildingConfirmModalProps> = ({ build
 
 			const floorsData = await supabase.from('Floor').select('*').eq('building_id', buildingId);
 
-			if (floorsData.error) return toast.error(floorsData.error);
+			if (floorsData.error) return toast.error(floorsData.error.message);
 			// delete all points
 			const deletePointsData = await supabase
 				.from('Point')
@@ -24,11 +24,11 @@ const DeleteBuildingConfirmModal: FC<DeleteBuildingConfirmModalProps> = ({ build
 					'floor_id',
 					floorsData.data.map((floor) => floor.id)
 				);
-			if (deletePointsData.error) return toast.error(deletePointsData.error);
+			if (deletePointsData.error) return toast.error(deletePointsData.error.message);
 
 			// delete all floors
 			const deleteFloorData = await supabase.from('Floor').delete().eq('building_id', buildingId);
-			if (deleteFloorData.error) return toast.error(deletePointsData.error);
+			if (deleteFloorData.error) return toast.error(deleteFloorData.error.message);
 
 			const { data, error } = await supabase.from('Building').delete().eq('id', buildingId);
 			if (!error) {
@@ -36,7 +36,7 @@ const DeleteBuildingConfirmModal: FC<DeleteBuildingConfirmModalProps> = ({ build
 				mutate('buildings');
 				toast.success('Building delete successfull!');
 			} else {
-				toast.error(error);
+				toast.error(error.message);
 			}
 		} catch (err: any) {
 			toast.error(err.message);

@@ -15,7 +15,7 @@ const ChangePasswordPage = () => {
 
 	const onSubmit = async (values: any) => {
 		const { error } = await supabase.auth.update(values);
-		if (error) toast.error(error);
+		if (error) toast.error(error.message);
 		else toast.success('Change password successfull!');
 	};
 

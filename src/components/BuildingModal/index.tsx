@@ -21,7 +21,7 @@ const BuildingModal: FC<BuildingModalProps> = ({ isOpen, onClose, building }) =>
 					onClose();
 					toast.success('Building update successfull!');
 				} else {
-					toast.error(error);
+					toast.error(error.message);
 				}
 			} else {
 				const { data, error, statusText } = await supabase.from('Building').insert([values]);
@@ -30,7 +30,7 @@ const BuildingModal: FC<BuildingModalProps> = ({ isOpen, onClose, building }) =>
 					onClose();
 					toast.success('Building add successfull!');
 				} else {
-					toast.error(error);
+					toast.error(error.message);
 				}
 			}
 		} catch (err: any) {

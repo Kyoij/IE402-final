@@ -32,10 +32,10 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 						},
 					])
 					.eq('id', floor.id);
-				if (error) return toast.error(error);
+				if (error) return toast.error(error.message);
 
 				const { error: err1 } = await supabase.from('Point').delete().eq('floor_id', floor.id);
-				if (err1) return toast.error(err1);
+				if (err1) return toast.error(err1.message);
 
 				const points = JSON.parse(values.points);
 				const { error: err } = await supabase
@@ -47,7 +47,7 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 					mutate(['building', building_id, 'floors']);
 					toast.success('Floor update successfull!');
 				} else {
-					toast.error(err);
+					toast.error(err.message);
 				}
 			} else {
 				const { data, error } = await supabase.from('Floor').insert([
@@ -59,7 +59,7 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 					},
 				]);
 
-				if (error) return toast.error(error);
+				if (error) return toast.error(error.message);
 
 				const points = JSON.parse(values.points);
 				const { error: err } = await supabase
@@ -71,7 +71,7 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 					mutate(['building', building_id, 'floors']);
 					toast.success('Floor update successfull!');
 				} else {
-					toast.error(err);
+					toast.error(err.message);
 				}
 			}
 		} catch (err: any) {

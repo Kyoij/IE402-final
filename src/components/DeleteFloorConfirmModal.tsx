@@ -13,14 +13,14 @@ const DeleteFloorConfirmModal: FC<DeleteFloorConfirmModalProps> = ({ floor, isOp
 		try {
 			setIsLoading(true);
 			const { error: err1 } = await supabase.from('Point').delete().eq('floor_id', floor.id);
-			if (err1) return toast.error(err1);
+			if (err1) return toast.error(err1.message);
 			const { data, error } = await supabase.from('Floor').delete().eq('id', floor.id);
 			if (!error) {
 				onClose();
 				mutate(['building', floor.building_id, 'floors']);
 				toast.success('Floor delete successfull!');
 			} else {
-				toast.error(error);
+				toast.error(error.message);
 			}
 		} catch (err: any) {
 			toast.error(err.message);
