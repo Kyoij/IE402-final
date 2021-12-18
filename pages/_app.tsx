@@ -13,7 +13,7 @@ setDefaultOptions({ css: true });
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<>
-			<SWRConfig value={{ provider: () => new Map() }}>
+			<SWRConfig value={{ provider: () => new Map(), shouldRetryOnError: false }}>
 				<UserContextProvider supabaseClient={supabase}>
 					<Layout>
 						<Component {...pageProps} />

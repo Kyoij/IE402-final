@@ -2,8 +2,9 @@ import Tabs from 'components/Tabs';
 import { useUser } from 'contexts/UserContext';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import BuildingTab from './BuildingTab';
 import FloorTab from './FloorTab';
+import BuildingTab from './BuildingTab';
+import BlockTab from './BlockTab';
 
 const AdminPage = () => {
 	const router = useRouter();
@@ -18,6 +19,7 @@ const AdminPage = () => {
 		<Tabs
 			tabs={[
 				{ id: 'building', label: 'Building', content: <BuildingTab /> },
+				{ id: 'block', label: 'Block', content: <BlockTab /> },
 				{ id: 'floor', label: 'Floor', content: <FloorTab /> },
 			]}
 		/>

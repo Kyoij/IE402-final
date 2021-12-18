@@ -11,12 +11,21 @@ CREATE TABLE "Point" (
 -- CreateTable
 CREATE TABLE "Floor" (
     "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "Floor_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Block" (
+    "id" SERIAL NOT NULL,
     "height" DOUBLE PRECISION NOT NULL,
     "index" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
     "building_id" INTEGER NOT NULL,
+    "floor_id" INTEGER NOT NULL,
 
-    CONSTRAINT "Floor_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Block_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -33,4 +42,7 @@ CREATE TABLE "Building" (
 ALTER TABLE "Point" ADD CONSTRAINT "Point_floor_id_fkey" FOREIGN KEY ("floor_id") REFERENCES "Floor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Floor" ADD CONSTRAINT "Floor_building_id_fkey" FOREIGN KEY ("building_id") REFERENCES "Building"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Block" ADD CONSTRAINT "Block_building_id_fkey" FOREIGN KEY ("building_id") REFERENCES "Building"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Block" ADD CONSTRAINT "Block_floor_id_fkey" FOREIGN KEY ("floor_id") REFERENCES "Floor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

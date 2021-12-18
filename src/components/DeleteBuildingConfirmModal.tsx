@@ -13,22 +13,13 @@ const DeleteBuildingConfirmModal: FC<DeleteBuildingConfirmModalProps> = ({ build
 		try {
 			setIsLoading(true);
 
-			const floorsData = await supabase.from('Floor').select('*').eq('building_id', buildingId);
+			const blocksData = await supabase.from('Block').select('*').eq('building_id', buildingId);
 
-			if (floorsData.error) return toast.error(floorsData.error.message);
-			// delete all points
-			const deletePointsData = await supabase
-				.from('Point')
-				.delete()
-				.in(
-					'floor_id',
-					floorsData.data.map((floor) => floor.id)
-				);
-			if (deletePointsData.error) return toast.error(deletePointsData.error.message);
+			if (blocksData.error) return toast.error(blocksData.error.message);
 
-			// delete all floors
-			const deleteFloorData = await supabase.from('Floor').delete().eq('building_id', buildingId);
-			if (deleteFloorData.error) return toast.error(deleteFloorData.error.message);
+			// delete all block
+			const deleteBlocksData = await supabase.from('Block').delete().eq('building_id', buildingId);
+			if (deleteBlocksData.error) return toast.error(deleteBlocksData.error.message);
 
 			const { data, error } = await supabase.from('Building').delete().eq('id', buildingId);
 			if (!error) {

@@ -1,9 +1,9 @@
 import LoadingIcon from 'components/LoadingIcon';
 import { FC } from 'react';
 import { definitions } from 'types/supabase';
-import FloorRow from './FloorRow';
+import BlockRow from './BlockRow';
 
-const FloorTable: FC<FloorTableProps> = ({ floors, isLoading }) => {
+const BlockTable: FC<BlockTableProps> = ({ blocks, isLoading }) => {
 	return (
 		<div className="flex flex-col mt-2">
 			<div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -16,7 +16,19 @@ const FloorTable: FC<FloorTableProps> = ({ floors, isLoading }) => {
 										scope="col"
 										className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
 									>
+										Index
+									</th>
+									<th
+										scope="col"
+										className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+									>
 										Name
+									</th>
+									<th
+										scope="col"
+										className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+									>
+										Height
 									</th>
 									<th scope="col" className="relative px-6 py-3">
 										<span className="sr-only">Edit</span>
@@ -33,7 +45,7 @@ const FloorTable: FC<FloorTableProps> = ({ floors, isLoading }) => {
 										</td>
 									</tr>
 								) : (
-									floors?.map((floor) => <FloorRow floor={floor} key={floor.id} />)
+									blocks?.map((block) => <BlockRow block={block} key={block.id} />)
 								)}
 							</tbody>
 						</table>
@@ -44,10 +56,10 @@ const FloorTable: FC<FloorTableProps> = ({ floors, isLoading }) => {
 	);
 };
 
-export default FloorTable;
+export default BlockTable;
 
 // component props
-type FloorTableProps = {
-	floors?: definitions['Building'][] | null;
+type BlockTableProps = {
+	blocks?: any[] | null;
 	isLoading?: boolean;
 };

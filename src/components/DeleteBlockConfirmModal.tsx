@@ -5,21 +5,19 @@ import supabase from 'libs/supabase';
 import { useSWRConfig } from 'swr';
 import { toast } from 'react-toastify';
 
-const DeleteFloorConfirmModal: FC<DeleteFloorConfirmModalProps> = ({ floor, isOpen, onClose }) => {
+const DeleteBlockConfirmModal: FC<DeleteBlockConfirmModalProps> = ({ block, isOpen, onClose }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { mutate } = useSWRConfig();
 
 	const onDelete = async () => {
 		try {
 			setIsLoading(true);
-			const { error: err1 } = await supabase.from('Point').delete().eq('floor_id', floor.id);
-			if (err1) return toast.error(err1.message);
 
-			const { data, error } = await supabase.from('Floor').delete().eq('id', floor.id);
+			const { data, error } = await supabase.from('Block').delete().eq('id', block.id);
 			if (!error) {
 				onClose();
-				mutate('floors');
-				toast.success('Floor delete successfull!');
+				mutate(['buildings', block.building_id, 'blocks']);
+				toast.success('Block delete successfull!');
 			} else {
 				toast.error(error.message);
 			}
@@ -81,11 +79,11 @@ const DeleteFloorConfirmModal: FC<DeleteFloorConfirmModalProps> = ({ floor, isOp
 									</div>
 									<div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
 										<h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-											Delete Floor
+											Delete Building
 										</h3>
 										<div className="mt-2">
 											<p className="text-sm text-gray-500">
-												Are you sure you want to delete this floor? All of your data will be permanently removed.
+												Are you sure you want to delete this building? All of your data will be permanently removed.
 												This action cannot be undone.
 											</p>
 										</div>
@@ -108,11 +106,11 @@ const DeleteFloorConfirmModal: FC<DeleteFloorConfirmModalProps> = ({ floor, isOp
 	);
 };
 
-export default DeleteFloorConfirmModal;
+export default DeleteBlockConfirmModal;
 
 // component props
-type DeleteFloorConfirmModalProps = {
-	floor: any;
+type DeleteBlockConfirmModalProps = {
+	block: any;
 	isOpen: boolean;
 	onClose: () => any;
 };

@@ -20,18 +20,29 @@ model Point{
 
 model Floor {
   id Int @id @default(autoincrement())
+  name String
+  blocks Block[]
+  points Point[]
+}
+
+model Block {
+  id Int @id @default(autoincrement())
   height Float
   index Int
   name String
   building Building @relation(fields: [building_id],references: [id])
   building_id Int
-  points Point[]
+
+  floor_id Int
+  floors Floor @relation(fields: [floor_id],references: [id])
 }
+
+
 
 model Building{
   id Int @id @default(autoincrement())
   name String
   color String
   size Float
-  floors Floor[]
+  blocks Block[]
 }

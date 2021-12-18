@@ -5,69 +5,55 @@ import { Dialog, Transition } from '@headlessui/react';
 import Button from 'components/Button';
 import Input from 'components/Input';
 import supabase from 'libs/supabase';
-import { definitions } from 'types/supabase';
 import Textarea from 'components/Textarea';
 import Select from 'components/Select';
 import { toast } from 'react-toastify';
-import { ADDRCONFIG } from 'dns';
 
-const QuickAddBuildingModal: FC<QuickAddBuildingModalProps> = ({ isOpen, onClose }) => {
+const BlockModal: FC<BlockModalProps> = ({ isOpen, onClose, block, building_id }) => {
+	const { data: buildings } = useSWR('buildings', async () => {
+		let { data } = await supabase.from('Building').select('*').order('id', { ascending: false });
+		return data;
+	});
+	const { data: floors } = useSWR(
+		'floors',
+		async () => {
+			let { data, error: err } = await supabase.from('Floor').select('id,name,points:Point(*)').order('id', { ascending: false });
+			if (err) throw new Error(err.message);
+			return data;
+		},
+		{ onError: (err) => toast.error(err.message) }
+	);
 	const { register, handleSubmit, formState, reset, getValues } = useForm();
 	const { mutate } = useSWRConfig();
 
 	const onSubmit = async (values: any) => {
 		try {
-			const geojson = JSON.parse(values.geojson);
-			const buildingName = values.name.toLowerCase().split(' ').join('_');
-
-			// add building
-			const addBuildingData = await supabase.from('Building').insert([{ name: values.name, size: values.size, color: values.color }]);
-			if (addBuildingData.error) return toast.error(addBuildingData.error.message);
-
-			await Promise.all(
-				geojson.features.map(async (feature: any, index: any) => {
-					// add floor
-					const { data, error: floorError } = await supabase.from('Floor').insert([
-						{
-							name: `floor_${index + 1}__${buildingName}`,
-						},
-					]);
-					if (floorError) throw new Error(floorError.message);
-
-					// add points and block
-					const [pointsData, blockData] = await Promise.all([
-						supabase.from('Point').insert(
-							feature.geometry.coordinates[0][0].map((point: any) => ({
-								longitude: point[0],
-								latitude: point[1],
-								floor_id: data?.[0].id,
-							}))
-						),
-						supabase.from('Block').insert([
-							{
-								building_id: addBuildingData.data[0].id,
-								floor_id: data?.[0].id,
-								height: values.size * index,
-								index: index + 1,
-								name: `Tầng ${index + 1}`,
-							},
-						]),
-					]);
-					if (pointsData.error || blockData.error) throw new Error(pointsData.error?.message || blockData.error?.message);
-				})
-			);
-			onClose();
-			mutate('buildings');
-			mutate(['buildings', addBuildingData.data[0].id, 'blocks']);
-			mutate('floors');
-			toast.success('Building add successfull!');
+			if (block) {
+				const { data, error, statusText } = await supabase.from('Block').update(values).eq('id', block.id);
+				if (!error) {
+					mutate(['buildings', building_id, 'blocks']);
+					onClose();
+					toast.success('Block update successfull!');
+				} else {
+					toast.error(error.message);
+				}
+			} else {
+				const { data, error, statusText } = await supabase.from('Block').insert([values]);
+				if (!error) {
+					mutate(['buildings', building_id, 'blocks']);
+					onClose();
+					toast.success('Block add successfull!');
+				} else {
+					toast.error(error.message);
+				}
+			}
 		} catch (err: any) {
 			toast.error(err.message);
 		}
 	};
 
 	useEffect(() => {
-		if (isOpen) reset();
+		if (isOpen) reset(block);
 	}, [isOpen]);
 
 	return (
@@ -101,27 +87,35 @@ const QuickAddBuildingModal: FC<QuickAddBuildingModalProps> = ({ isOpen, onClose
 					>
 						<div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
 							<Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-								Quick Add
+								{block ? 'Floor Detail' : 'Add Floor'}
 							</Dialog.Title>
 
 							<form onSubmit={handleSubmit(onSubmit)}>
 								<div className="mt-2">
-									<Input label="Name" {...register('name', { required: true, minLength: 6 })} />
+									<Select label="Building" options={buildings || []} {...register('building_id')} />
+								</div>
+								<div className="mt-2">
+									<Select label="Floor" options={floors || []} {...register('floor_id')} />
 								</div>
 								<div className="mt-2">
 									<Input
-										label="Size"
 										type="number"
-										step={0.01}
-										{...register('size', { required: true, min: 0, valueAsNumber: true })}
+										label="Index"
+										{...register('index', { required: true, min: 1, valueAsNumber: true })}
 									/>
 								</div>
 								<div className="mt-2">
-									<Input label="Color" {...register('color', { required: true })} />
+									<Input label="Name" {...register('name', { required: true, minLength: 1 })} />
 								</div>
 								<div className="mt-2">
-									<Textarea label="GeoJson" rows={10} {...register('geojson', { required: true })} />
+									<Input
+										type="number"
+										label="Height"
+										step="0.01"
+										{...register('height', { required: true, min: 0, valueAsNumber: true })}
+									/>
 								</div>
+
 								<div className="mt-4 flex justify-end ">
 									<Button variant="secondary" onClick={onClose}>
 										Cancel
@@ -139,10 +133,12 @@ const QuickAddBuildingModal: FC<QuickAddBuildingModalProps> = ({ isOpen, onClose
 	);
 };
 
-export default QuickAddBuildingModal;
+export default BlockModal;
 
 // component props
-type QuickAddBuildingModalProps = {
+type BlockModalProps = {
 	isOpen: boolean;
 	onClose: () => any;
+	block?: any;
+	building_id: number;
 };

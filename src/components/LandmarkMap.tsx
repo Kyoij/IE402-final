@@ -1,14 +1,20 @@
 import { Map, Scene } from '@esri/react-arcgis';
 import supabase from 'libs/supabase';
 import { useEffect } from 'react';
+import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import Building from './Building';
 
 const LandmarkMap = () => {
-	const { data: buildings } = useSWR('buildings', async () => {
-		let { data } = await supabase.from('Building').select('*').order('id', { ascending: false });
-		return data;
-	});
+	const { data: buildings } = useSWR(
+		'buildings',
+		async () => {
+			let { data, error: err } = await supabase.from('Building').select('*').order('id', { ascending: false });
+			if (err) throw new Error(err.message);
+			return data;
+		},
+		{ onError: (err) => toast.error(err.message) }
+	);
 
 	return (
 		<Scene

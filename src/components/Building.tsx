@@ -6,10 +6,16 @@ import { toast } from 'react-toastify';
 
 const Building: FC<any> = ({ id, ...props }) => {
 	const layerRef = useRef<any>();
-	const { data, error } = useSWR(['buildings', id, 'geojson'], () =>
-		fetch(`/api/buildings/${id}`)
-			.then((res) => res.json())
-			.then((data) => data.data)
+	const { data, error } = useSWR(
+		['buildings', id, 'geojson'],
+		() =>
+			fetch(`/api/buildings/${id}`)
+				.then((res) => res.json())
+				.then((data) => {
+					if (data.error) throw new Error(data.error.message);
+					else return data.data;
+				}),
+		{ onError: (err) => toast.error(err.message) }
 	);
 
 	useEffect(() => {

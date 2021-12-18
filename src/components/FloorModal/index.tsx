@@ -1,21 +1,15 @@
 import { FC, Fragment, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import useSWR, { useSWRConfig } from 'swr';
+import { useSWRConfig } from 'swr';
 import { Dialog, Transition } from '@headlessui/react';
 import Button from 'components/Button';
 import Input from 'components/Input';
 import supabase from 'libs/supabase';
-import { definitions } from 'types/supabase';
-import Textarea from 'components/Textarea';
-import Select from 'components/Select';
 import { toast } from 'react-toastify';
+import Textarea from 'components/Textarea';
 
-const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }) => {
-	const { data: buildings } = useSWR('buildings', async () => {
-		let { data } = await supabase.from('Building').select('*').order('id', { ascending: false });
-		return data;
-	});
-	const { register, handleSubmit, formState, reset, getValues } = useForm();
+const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor }) => {
+	const { register, handleSubmit, formState, reset } = useForm({ defaultValues: floor });
 	const { mutate } = useSWRConfig();
 
 	const onSubmit = async (values: any) => {
@@ -25,13 +19,11 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 					.from('Floor')
 					.update([
 						{
-							building_id: values.building_id,
-							height: values.height,
-							index: values.index,
 							name: values.name,
 						},
 					])
 					.eq('id', floor.id);
+
 				if (error) return toast.error(error.message);
 
 				const { error: err1 } = await supabase.from('Point').delete().eq('floor_id', floor.id);
@@ -41,10 +33,9 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 				const { error: err } = await supabase
 					.from('Point')
 					.insert(points.map((point: any) => ({ longitude: point[0], latitude: point[1], floor_id: data?.[0].id })));
-
 				if (!err) {
 					onClose();
-					mutate(['building', building_id, 'floors']);
+					mutate('floors');
 					toast.success('Floor update successfull!');
 				} else {
 					toast.error(err.message);
@@ -52,13 +43,9 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 			} else {
 				const { data, error } = await supabase.from('Floor').insert([
 					{
-						building_id: values.building_id,
-						height: values.height,
-						index: values.index,
 						name: values.name,
 					},
 				]);
-
 				if (error) return toast.error(error.message);
 
 				const points = JSON.parse(values.points);
@@ -68,8 +55,8 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 
 				if (!err) {
 					onClose();
-					mutate(['building', building_id, 'floors']);
-					toast.success('Floor update successfull!');
+					mutate('floors');
+					toast.success('Floor create successfull!');
 				} else {
 					toast.error(err.message);
 				}
@@ -82,7 +69,6 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 	useEffect(() => {
 		if (isOpen) {
 			reset({
-				building_id,
 				...floor,
 				points: floor ? JSON.stringify(floor.points.map((point: any) => [point.longitude, point.latitude])) : '',
 			});
@@ -125,27 +111,8 @@ const FloorModal: FC<FloorModalProps> = ({ isOpen, onClose, floor, building_id }
 
 							<form onSubmit={handleSubmit(onSubmit)}>
 								<div className="mt-2">
-									<Select label="Building" options={buildings || []} {...register('building_id')} />
+									<Input label="Name" {...register('name', { required: true, minLength: 6 })} />
 								</div>
-								<div className="mt-2">
-									<Input
-										type="number"
-										label="Index"
-										{...register('index', { required: true, min: 1, valueAsNumber: true })}
-									/>
-								</div>
-								<div className="mt-2">
-									<Input label="Name" {...register('name', { required: true, minLength: 1 })} />
-								</div>
-								<div className="mt-2">
-									<Input
-										type="number"
-										label="Height"
-										step="0.01"
-										{...register('height', { required: true, min: 0, valueAsNumber: true })}
-									/>
-								</div>
-
 								<div className="mt-2">
 									<Textarea
 										label="Points"
@@ -198,5 +165,4 @@ type FloorModalProps = {
 	isOpen: boolean;
 	onClose: () => any;
 	floor?: any;
-	building_id: number;
 };
