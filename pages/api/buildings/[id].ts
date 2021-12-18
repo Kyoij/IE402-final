@@ -8,7 +8,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 				supabase.from('Building').select('*').eq('id', req.query.id),
 				supabase
 					.from('Block')
-					.select('id,height,index,name,floor_id,floor:Floor(*)')
+					.select('id,height,index,name,floor_id')
 					.eq('building_id', req.query.id)
 					.order('index', { ascending: true }),
 			]);
