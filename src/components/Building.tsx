@@ -15,7 +15,7 @@ const Building: FC<any> = ({ id, ...props }) => {
 					if (data.error) throw new Error(data.error.message);
 					else return data.data;
 				}),
-		{ onError: (err) => toast.error(err.message) }
+		{ onError: (err) => toast.error(err.message), shouldRetryOnError: true, errorRetryInterval: 1000 }
 	);
 
 	useEffect(() => {
